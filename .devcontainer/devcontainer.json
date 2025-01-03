@@ -1,5 +1,5 @@
 {
-    "name": "titanic-api",
+    "name": "gen_transcript",
     "build": {
       "dockerfile": "dockerfile"
     },
