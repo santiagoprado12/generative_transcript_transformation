@@ -1,0 +1,11 @@
+[tool.ruff]
+ignore-init-module-imports = true
+select = [
+    # Enable all `pydocstyle` rules
+    "D",
+    # isort
+    "I001",
+]
+
+[tool.ruff.pydocstyle]
+convention = "google"

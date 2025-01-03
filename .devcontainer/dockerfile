@@ -1,0 +1,27 @@
+# Use Python image as base
+FROM mcr.microsoft.com/devcontainers/python:3.10
+
+# Install any additional system packages
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential
+
+# Install Oh My Zsh
+ARG oh_my_zsh=true
+RUN if ${oh_my_zsh}; \
+    then sh -c "$(curl -L https://github.com/deluan/zsh-in-docker/releases/download/v1.1.5/zsh-in-docker.sh)" -- \
+    -p git -p https://github.com/zsh-users/zsh-autosuggestions -t robbyrussell ; \
+    else echo "Skipping oh-my-zsh installation" ; \
+    fi
+
+# Set the default shell for the VSCode user to Zsh
+RUN chsh -s /bin/zsh vscode
+
+# Install system packages including Cron
+RUN apt-get update && apt-get install -y \
+    cron \
+    git \
+    build-essential
+
+# Start Cron in the container
+CMD cron && tail -f /dev/null

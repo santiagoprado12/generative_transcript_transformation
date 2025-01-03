@@ -1,0 +1,61 @@
+{
+    "name": "titanic-api",
+    "build": {
+      "dockerfile": "dockerfile"
+    },
+    "postCreateCommand": "pip install -r requirements.txt",
+    "remoteUser": "vscode",
+    "customizations": {
+      "vscode": {
+        // Add the IDs of extensions you want installed when container is created.
+        "extensions": [
+          "ms-python.python",
+          "ms-python.vscode-pylance",
+          "charliermarsh.ruff",
+          "samuelcolvin.jinjahtml",
+          "streetsidesoftware.code-spell-checker",
+          "github.copilot",
+          "github.copilot-labs",
+          "eamodio.gitlens",
+          "yzhang.markdown-all-in-one",
+          "wayou.vscode-todo-highlight",
+          "tamasfe.even-better-toml",
+          "ms-python.black-formatter",
+          "mtxr.sqltools",
+          "mtxr.sqltools-driver-pg",
+          "ms-toolsai.jupyter"
+        ],
+        // Customize the settings inside VS code:
+        "settings": {
+          "terminal.integrated.profiles.linux": {
+            "zsh": {
+              "path": "/bin/zsh",
+              "icon": "terminal-bash"
+            }
+          },
+          "terminal.integrated.shell.linux": "/bin/zsh",
+          "terminal.integrated.defaultProfile.linux": "zsh",
+          "editor.formatOnSave": true,
+          "editor.tabSize": 4,
+          "editor.rulers": [
+            88
+          ],
+          "python.testing.pytestEnabled": true,
+          "python.testing.pytestArgs": [
+            "-s"
+          ],
+          "python.defaultInterpreterPath": "/usr/local/bin/python",
+          "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter",
+            "editor.codeActionsOnSave": {
+              "source.fixAll": true,
+              "source.organizeImports": true
+            }
+          },
+          "ruff.lint.args": [
+            "--config=./pyproject.toml"
+          ]
+        }
+      }
+    }
+}
