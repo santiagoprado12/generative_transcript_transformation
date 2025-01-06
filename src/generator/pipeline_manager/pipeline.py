@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, Literal, TypedDict
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
@@ -65,7 +65,6 @@ class TranscriptPipeline:
         self.graph.add_node("assign_word_counts", self.assign_word_counts)
         self.graph.add_node("fill_each_chapter", self.fill_each_chapter)
         self.graph.add_node("assemble_final_document", self.assemble_final_document)
-        self.graph.add_node("refine_summary", self.refine_summary)
         self.graph.add_node("refine_chapter", self.refine_chapter)
         self.graph.add_node("save_as_pdf", self.save_as_pdf)
 
@@ -171,7 +170,9 @@ class TranscriptPipeline:
         }
         return {"chapters": chapters}
 
-    def should_refine_chapter(self, state: Dict[str, Any]) -> str:
+    def should_refine_chapter(
+        self, state: Dict[str, Any]
+    ) -> Literal["assemble_final_document", "refine_chapter"]:
         """Determine if any chapters need refinement.
 
         Args:
@@ -239,29 +240,6 @@ class TranscriptPipeline:
         )
         return {"final_document": final_document}
 
-    def refine_summary(
-        self, state: Dict[str, Any], config: RunnableConfig
-    ) -> Dict[str, Any]:
-        """Refine the summary of the final document.
-
-        Args:
-            state (Dict[str, Any]): The current state of the pipeline.
-            config (RunnableConfig): Configuration for the runnable.
-
-        Returns:
-            Dict[str, Any]: The updated state with the refined final document.
-        """
-        prompt = ChatPromptTemplate(prompts["refine_summary"])
-        refine_chain = prompt | self.llm | StrOutputParser()
-        final_document = refine_chain.invoke(
-            {
-                "context": state["final_document"],
-                "final_document": state["final_document"],
-            },
-            config,
-        )
-        return {"final_document": final_document}
-
     def save_as_pdf(self, state: Dict[str, Any], config: RunnableConfig):
         """Save the final document as a PDF file.
 
@@ -281,7 +259,7 @@ class TranscriptPipeline:
         app = self.graph.compile()
         return app
 
-    def save_graph(self, path: str):
+    def save_graph(self):
         """Save the state graph to a file.
 
         Args:
@@ -289,7 +267,7 @@ class TranscriptPipeline:
         """
         app = self.graph.compile()
 
-        image_data = self.graph.get_graph().draw_mermaid_png()
+        image_data = app.get_graph().draw_mermaid_png()
 
         # Save the image to a file
         with open("graph.png", "wb") as f:
