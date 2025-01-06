@@ -33,6 +33,6 @@ The pipeline is built using a state graph, where each node represents a step in 
 
 ## Deployment
 
-The app can be deployed using Streamlit. Once deployed, you can access it via the following link:
+The app is deployed using Streamlit. You can access it via the following link:
 
-[Deployed App Link](#)
+[Deployed App Link](https://appapppy-b6r722hxkrroxdh64cxvzr.streamlit.app/)
