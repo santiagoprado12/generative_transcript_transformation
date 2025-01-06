@@ -1,6 +1,7 @@
 import openai
 from abstract import GenAIModelManager
 
+
 class OpenAIModelManager(GenAIModelManager):
     """A class to manage OpenAI models like GPT-3.
 
@@ -10,7 +11,7 @@ class OpenAIModelManager(GenAIModelManager):
     Methods:
         generate_text(self, prompt: str) -> str: Generates text based on the given prompt using OpenAI's API.
     """
-    def __init__(self, model_name: str = "davinci-codex", max_tokens:int = 150):
+    def __init__(self, model_name: str = "davinci-codex", max_tokens: int = 150):
         """Initializes the OpenAIModelManager with the specified model name.
 
         Args:

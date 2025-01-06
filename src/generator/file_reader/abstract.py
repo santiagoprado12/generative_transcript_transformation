@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 class FileReader(ABC):
@@ -57,3 +58,26 @@ class FileReader(ABC):
         return self.content
 
 
+    def get_chunks(self, chunk_size: int = 1000, chunk_overlap: int = 200):
+        """Get the content of the file in chunks.
+
+        Args:
+            chunk_size (int): The size of each chunk. Default is 1000 characters.
+            chunk_overlap (int): The number of characters to overlap between chunks. Default is 200 characters.
+
+        Yields:
+            str: A chunk of the processed content.
+        """
+        if self.content is None:
+            raise ValueError("Content is not available. Please read and process the file first.")
+        
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            length_function=len,
+            is_separator_regex=False,
+        )
+        chunks = text_splitter.split_text(self.content)
+        
+        for chunk in chunks:
+            yield chunk

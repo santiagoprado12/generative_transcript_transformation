@@ -7,13 +7,13 @@ from src.generator.file_reader.pdf_reader import PDFReader
 class TestPDFReader(unittest.TestCase):
 
     @patch("builtins.open", new_callable=mock_open, read_data=b"dummy data")
-    @patch("PyPDF2.PdfFileReader")
+    @patch("pypdf.PdfReader")
     def test_verify_extension(self, mock_pdf_reader, mock_file):
         reader = PDFReader("dummy.pdf")
         self.assertTrue(reader.verify_extension())
 
     @patch("builtins.open", new_callable=mock_open, read_data=b"dummy data")
-    @patch("PyPDF2.PdfFileReader")
+    @patch("pypdf.PdfReader")
     def test_read_file(self, mock_pdf_reader, mock_file):
         mock_pdf = MagicMock()
         mock_pdf.numPages = 1
@@ -25,7 +25,7 @@ class TestPDFReader(unittest.TestCase):
         self.assertEqual(content, "Page content")
 
     @patch("builtins.open", new_callable=mock_open, read_data=b"dummy data")
-    @patch("PyPDF2.PdfFileReader")
+    @patch("pypdf.PdfReader")
     def test_process_content(self, mock_pdf_reader, mock_file):
         reader = PDFReader("dummy.pdf")
         processed_content = reader.process_content("Some content")

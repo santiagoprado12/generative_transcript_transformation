@@ -1,4 +1,4 @@
-import PyPDF2
+import pypdf
 from src.generator.file_reader.abstract import FileReader
 
 
@@ -21,7 +21,7 @@ class PDFReader(FileReader):
         """
         content = ""
         with open(self.file_path, 'rb') as file:
-            reader = PyPDF2.PdfFileReader(file)
+            reader = pypdf.PdfReader(file)
             for page_num in range(reader.numPages):
                 page = reader.getPage(page_num)
                 content += page.extract_text()

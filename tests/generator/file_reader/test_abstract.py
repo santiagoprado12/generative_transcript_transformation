@@ -35,5 +35,15 @@ class TestFileReaderAbstract(unittest.TestCase):
         self.file_reader.content = "processed content"
         self.assertEqual(self.file_reader.get_content(), "processed content")
 
+    def test_get_chunks(self):
+        self.file_reader.content = "a" * 3000  # 3000 characters of 'a'
+
+        chunks = list(self.file_reader.get_chunks(chunk_size=1000, chunk_overlap=0))
+
+        self.assertEqual(len(chunks), 3)
+        self.assertEqual(chunks[0], "a" * 1000)
+        self.assertEqual(chunks[1], "a" * 1000)
+        self.assertEqual(chunks[2], "a" * 1000)
+
 if __name__ == '__main__':
     unittest.main()
