@@ -1,16 +1,23 @@
-import streamlit as st
 import asyncio
 from pathlib import Path
 
-from test import app  # Assuming the previous code is in a file named test.py
+import streamlit as st
+
+from src.generator.pipeline_manager.pipeline import TranscriptPipeline
 
 st.title("Generative Transcript Transformation")
 
 # Text input for instruction
-instruction = st.text_input("Enter your instruction:")
+instruction = st.text_input(
+    "Enter your instruction:",
+    value="Transcript from a cybersecurity SME discussing risks in cloud systems (friendly tone).",
+)
 
 # File uploader for PDF
 uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+word_count = st.slider(
+    "Select the number of words:", min_value=1000, max_value=15000, step=100
+)
 
 # Button to start processing
 if st.button("Generate Transcript"):
@@ -20,16 +27,22 @@ if st.button("Generate Transcript"):
         with open(pdf_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
-        # Display progress bar
-        progress_bar = st.progress(0)
+        async def run_pipeline():
+            # Display progress bar
+            progress_bar = st.progress(0)
 
-        async def run_app():
-            initial_state = {"pdf_path": str(pdf_path)}
-            await app.ainvoke(initial_state)
-            progress_bar.progress(100)
+            initial_state = {"pdf_path": str(pdf_path), "required_words": word_count, "instruction": instruction}
+            pipeline = TranscriptPipeline(initial_state)
+            pipeline_app = pipeline.app
+            steps_completed = tuple()
+            total_steps = 5
 
-        # Run the app
-        asyncio.run(run_app())
+            async for step in pipeline_app.astream(initial_state):
+                steps_completed += (list(step.keys())[0],)
+                progress_bar.progress(min((len(steps_completed) / total_steps), 1))
+
+        # Run the pipeline
+        asyncio.run(run_pipeline())
 
         # Display the generated PDF
         st.success("Transcript generated successfully!")
